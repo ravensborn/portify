@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio - Portify</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo"><i class="fas fa-rocket"></i> Portify</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+      </div>
+    </nav>
+
+    <!-- Portfolio Container -->
+    <div class="container portfolio-container">
+      <!-- Loading State -->
+      <div id="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading portfolio...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error" class="error-state" style="display: none">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Portfolio Not Found</h3>
+        <p>The portfolio you're looking for doesn't exist or is private.</p>
+        <a href="index.html" class="btn btn-primary">Back to Home</a>
+      </div>
+
+      <!-- Portfolio Content (Will be populated by JavaScript) -->
+      <div id="portfolio-content" style="display: none">
+        <!-- Header Section -->
+        <header class="portfolio-header">
+          <div class="header-left">
+            <div class="profile-image" id="profile-image">
+              <img id="profile-img" alt="Profile" />
+            </div>
+          </div>
+          <div class="header-right">
+            <h1 id="portfolio-name">John Doe</h1>
+            <h2 id="portfolio-title">Software Developer</h2>
+            <p id="portfolio-bio" class="portfolio-bio">
+              Passionate developer with 5+ years of experience...
+            </p>
+            <div class="contact-info" id="contact-info">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="portfolio-main">
+          <!-- Left Column -->
+          <div class="portfolio-left">
+            <!-- Experience Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-briefcase"></i> Experience</h3>
+              <div id="experience-list" class="experience-list">
+                <!-- Experience items will be added here -->
+              </div>
+            </section>
+
+            <!-- Education Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+              <div id="education-list" class="education-list">
+                <!-- Education items will be added here -->
+              </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-star"></i> Skills</h3>
+              <div id="skills-list" class="skills-list">
+                <!-- Skills will be added here -->
+              </div>
+            </section>
+
+            <!-- Languages Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-language"></i> Languages</h3>
+              <div id="languages-list" class="languages-list">
+                <!-- Languages will be added here -->
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Column -->
+          <div class="portfolio-right">
+            <!-- Quick Info Box -->
+            <div class="info-box">
+              <h4><i class="fas fa-info-circle"></i> Quick Info</h4>
+              <div id="quick-info"></div>
+            </div>
+
+            <!-- Projects Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-code"></i> Projects</h3>
+              <div id="projects-list" class="projects-list">
+                <!-- Projects will be added here -->
+              </div>
+            </section>
+
+            <!-- Blogs Section -->
+            <section class="portfolio-section">
+              <h3><i class="fas fa-blog"></i> Blogs & Articles</h3>
+              <div id="blogs-list" class="blogs-list">
+                <!-- Blogs will be added here -->
+              </div>
+            </section>
+
+            <!-- Share Section -->
+            <div class="share-box">
+              <h4><i class="fas fa-share-alt"></i> Share Portfolio</h4>
+              <div class="share-buttons">
+                <button class="share-btn" onclick="sharePortfolio('twitter')">
+                  <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="share-btn" onclick="sharePortfolio('linkedin')">
+                  <i class="fab fa-linkedin"></i> LinkedIn
+                </button>
+                <button class="share-btn" onclick="copyLink()">
+                  <i class="fas fa-link"></i> Copy Link
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="portfolio-footer">
+      <p>
+        Made with <i class="fas fa-heart" style="color: #ef4444"></i> using
+        Portify
+      </p>
+      <p class="footer-links">
+        <a href="index.html">Create your own portfolio</a>
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      // Get username from URL parameter
+      function getUsernameFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("username");
+      }
+
+      // Fetch portfolio data
+      async function loadPortfolio() {
+        const username = getUsernameFromURL();
+
+        if (!username) {
+          showError("No username specified");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/portfolio/user/${username}`,
+          );
+
+          if (response.ok) {
+            const portfolio = await response.json();
+            displayPortfolio(portfolio);
+          } else {
+            const errorData = await response.json();
+            showError(errorData.message || "Portfolio not found");
+          }
+        } catch (error) {
+          console.error("Error loading portfolio:", error);
+          showError("Error loading portfolio. Please try again.");
+        }
+      }
+
+      // Display portfolio data
+      function displayPortfolio(portfolio) {
+        // Hide loading, show content
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("portfolio-content").style.display = "block";
+
+        // Set basic info
+        document.getElementById("portfolio-name").textContent =
+          portfolio.fullName || "Unknown";
+        document.getElementById("portfolio-title").textContent =
+          portfolio.title || "";
+        document.getElementById("portfolio-bio").textContent =
+          portfolio.bio || "";
+
+        // Set profile image
+        const profileImg = document.getElementById("profile-img");
+        if (portfolio.imageUrl) {
+          profileImg.src = portfolio.imageUrl;
+          profileImg.style.display = "block";
+        } else {
+          // Show initials as fallback
+          const initials = (portfolio.fullName || "JD")
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .substring(0, 2);
+          document.getElementById("profile-image").innerHTML = `
+            <div class="profile-initials">${initials}</div>
+          `;
+        }
+
+        // Display all sections
+        displayExperiences(portfolio.experiences || []);
+        displayEducation(portfolio.educations || []);
+        displaySkills(portfolio.skills || []);
+        displayLanguages(portfolio.languages || []);
+        displayProjects(portfolio.projects || []);
+        displayBlogs(portfolio.blogs || []);
+        displayQuickInfo(portfolio);
+
+        // Update page title
+        document.title = `${portfolio.fullName} - Portify Portfolio`;
+      }
+
+      // Display experiences
+      function displayExperiences(experiences) {
+        const container = document.getElementById("experience-list");
+
+        if (experiences.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No experiences added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = experiences
+          .map(
+            (exp) => `
+          <div class="experience-item">
+            <div class="experience-header">
+              <h4>${exp.position || "Unknown Position"}</h4>
+              <span class="experience-date">
+                ${formatYearFromDate(exp.startDate)} - ${exp.endDate ? formatYearFromDate(exp.endDate) : "Present"}
+              </span>
+            </div>
+            <p class="experience-company">${exp.company || "Unknown Company"}</p>
+            ${exp.description ? `<p class="experience-desc">${exp.description}</p>` : ""}
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display education
+      function displayEducation(educations) {
+        const container = document.getElementById("education-list");
+
+        if (educations.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No education added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = educations
+          .map(
+            (edu) => `
+          <div class="education-item">
+            <div class="education-header">
+              <h4>${edu.degree || "Unknown Degree"}</h4>
+              <span class="education-date">${edu.startYear || edu.year || "N/A"}</span>
+            </div>
+            <p class="education-field">${edu.field || "Unknown Field"}</p>
+            <p class="education-institution">${edu.institution || "Unknown Institution"}</p>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display skills
+      function displaySkills(skills) {
+        const container = document.getElementById("skills-list");
+
+        if (skills.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No skills added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = skills
+          .map(
+            (skill) => `
+          <div class="skill-item">
+            <span class="skill-name">${skill.name || "Unknown Skill"}</span>
+            <div class="skill-level">
+              <div class="skill-level-bar" style="width: ${getSkillLevelWidth(
+                skill.level,
+              )}%"></div>
+            </div>
+            <span class="skill-level-text">${skill.level || "Beginner"}</span>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display languages
+      function displayLanguages(languages) {
+        const container = document.getElementById("languages-list");
+
+        if (languages.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No languages added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = languages
+          .map(
+            (lang) => `
+          <div class="language-item">
+            <span class="language-name">${lang.name || "Unknown Language"}</span>
+            <div class="language-level">
+              <div class="language-level-bar" style="width: ${getLanguageLevelWidth(
+                lang.level,
+              )}%"></div>
+            </div>
+            <span class="language-level-text">${lang.level || "Basic"}</span>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display projects
+      function displayProjects(projects) {
+        const container = document.getElementById("projects-list");
+
+        if (projects.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No projects added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = projects
+          .map(
+            (project) => `
+          <div class="project-item">
+            <div class="project-header">
+              <h4>${project.title || "Untitled Project"}</h4>
+              ${project.technologies ? `<span class="project-tech">${project.technologies}</span>` : ""}
+            </div>
+            <p class="project-description">${project.description || ""}</p>
+            ${project.link ? `<a href="${project.link}" target="_blank" class="project-link">View Project <i class="fas fa-external-link-alt"></i></a>` : ""}
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display blogs
+      function displayBlogs(blogs) {
+        const container = document.getElementById("blogs-list");
+
+        if (blogs.length === 0) {
+          container.innerHTML =
+            '<p class="empty-message">No blogs added yet.</p>';
+          return;
+        }
+
+        container.innerHTML = blogs
+          .map(
+            (blog) => `
+          <div class="blog-item">
+            <div class="blog-header">
+              <h4>${blog.title || "Untitled Blog"}</h4>
+              <span class="blog-date">${formatDate(blog.createdAt)}</span>
+            </div>
+            <p class="blog-excerpt">${blog.content ? blog.content.substring(0, 150) + "..." : ""}</p>
+            ${blog.link ? `<a href="${blog.link}" target="_blank" class="blog-link">Read More <i class="fas fa-external-link-alt"></i></a>` : ""}
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // Display quick info
+      function displayQuickInfo(portfolio) {
+        const container = document.getElementById("quick-info");
+        const infoItems = [];
+
+        if (portfolio.fullName) {
+          infoItems.push(`
+            <div class="quick-info-item">
+              <i class="fas fa-user"></i>
+              <span>${portfolio.fullName}</span>
+            </div>
+          `);
+        }
+
+        if (portfolio.title) {
+          infoItems.push(`
+            <div class="quick-info-item">
+              <i class="fas fa-briefcase"></i>
+              <span>${portfolio.title}</span>
+            </div>
+          `);
+        }
+
+        if (portfolio.template) {
+          infoItems.push(`
+            <div class="quick-info-item">
+              <i class="fas fa-palette"></i>
+              <span>${portfolio.template.name} Template</span>
+            </div>
+          `);
+        }
+
+        if (portfolio.createdAt) {
+          infoItems.push(`
+            <div class="quick-info-item">
+              <i class="fas fa-calendar"></i>
+              <span>Created: ${formatDate(portfolio.createdAt)}</span>
+            </div>
+          `);
+        }
+
+        if (portfolio.username) {
+          infoItems.push(`
+            <div class="quick-info-item">
+              <i class="fas fa-at"></i>
+              <span>@${portfolio.username}</span>
+            </div>
+          `);
+        }
+
+        container.innerHTML = infoItems.join("");
+      }
+
+      // Helper function to format date to readable format
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      // Helper function to get year from date
+      function formatYearFromDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.getFullYear();
+      }
+
+      // Helper function for skill level width
+      function getSkillLevelWidth(level) {
+        const levels = {
+          Beginner: 25,
+          Intermediate: 50,
+          Advanced: 75,
+          Expert: 100,
+        };
+        return levels[level] || 25;
+      }
+
+      // Helper function for language level width
+      function getLanguageLevelWidth(level) {
+        const levels = {
+          Basic: 25,
+          Conversational: 50,
+          Fluent: 75,
+          Native: 100,
+        };
+        return levels[level] || 25;
+      }
+
+      // Show error state
+      function showError(message) {
+        document.getElementById("loading").style.display = "none";
+        const errorDiv = document.getElementById("error");
+        errorDiv.querySelector("p").textContent = message;
+        errorDiv.style.display = "block";
+      }
+
+      // Share functions
+      function sharePortfolio(platform) {
+        const url = window.location.href;
+        const title = document.getElementById("portfolio-name").textContent;
+        let shareUrl = "";
+
+        switch (platform) {
+          case "twitter":
+            shareUrl = `https://twitter.com/intent/tweet?text=Check out my portfolio: ${title}&url=${encodeURIComponent(url)}`;
+            break;
+          case "linkedin":
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+            break;
+        }
+
+        if (shareUrl) {
+          window.open(shareUrl, "_blank", "width=600,height=400");
+        }
+      }
+
+      function copyLink() {
+        const url = window.location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            // Show temporary success message
+            const btn = event.target.closest(".share-btn");
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.background = "#10b981";
+            setTimeout(() => {
+              btn.innerHTML = originalHtml;
+              btn.style.background = "";
+            }, 2000);
+          })
+          .catch(() => {
+            alert("Failed to copy link");
+          });
+      }
+
+      // Load portfolio when page loads
+      document.addEventListener("DOMContentLoaded", loadPortfolio);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Portify</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo"><i class="fas fa-rocket"></i> Portify</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="login.html" class="active">Login</a>
+        <a href="register.html">Register</a>
+      </div>
+    </nav>
+
+    <div class="container auth-container">
+      <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <p>Login to access your portfolio</p>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="Enter your email"
+            />
+            <div class="error" id="email-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-input">
+              <input
+                type="password"
+                id="password"
+                required
+                placeholder="Enter your password"
+              />
+              <button type="button" class="password-toggle">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="error" id="password-error"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <p class="auth-link">
+          Don't have an account? <a href="register.html">Register here</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      // Login specific script
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Clear errors
+          document.getElementById("email-error").textContent = "";
+          document.getElementById("password-error").textContent = "";
+
+          try {
+            const response = await fetch(
+              "http://localhost:5000/api/auth/login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+              },
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              // Save token and user data
+              localStorage.setItem("portify_token", data.token);
+              localStorage.setItem("portify_user", JSON.stringify(data.user));
+
+              // Redirect to portfolio creation page
+              window.location.href = "portfolio.html";
+            } else {
+              document.getElementById("password-error").textContent =
+                data.message || "Login failed";
+            }
+          } catch (error) {
+            document.getElementById("password-error").textContent =
+              "Error connecting to server";
+          }
+        });
+
+      // Password toggle
+      document
+        .querySelector(".password-toggle")
+        .addEventListener("click", function () {
+          const passwordInput = document.getElementById("password");
+          const icon = this.querySelector("i");
+
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.className = "fas fa-eye-slash";
+          } else {
+            passwordInput.type = "password";
+            icon.className = "fas fa-eye";
+          }
+        });
+    </script>
+  </body>
+</html>

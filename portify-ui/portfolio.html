@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Portfolio - Portify</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo"><i class="fas fa-rocket"></i> Portify</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#" id="logout-btn">Logout</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="page-title" id="page-title">Create Your Portfolio</h1>
+
+      <!-- Progress Steps - Simplified to 2 steps -->
+      <div class="progress-steps">
+        <div class="step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">Personal Info</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Portfolio Details</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Personal Information -->
+      <div id="step-1" class="step-content active">
+        <h2>Personal Information</h2>
+        <form id="personal-form">
+          <div class="form-group">
+            <label for="full-name">Full Name *</label>
+            <input type="text" id="full-name" required placeholder="John Doe" />
+            <div class="error" id="full-name-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="title">Professional Title *</label>
+            <input
+              type="text"
+              id="title"
+              required
+              placeholder="Software Developer"
+            />
+            <div class="error" id="title-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Bio *</label>
+            <textarea
+              id="bio"
+              rows="4"
+              required
+              placeholder="Tell us about yourself..."
+            ></textarea>
+            <div class="error" id="bio-error"></div>
+            <small
+              >Write a brief introduction about yourself (minimum 50
+              characters)</small
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="image-url">Profile Image URL (optional)</label>
+            <input
+              type="url"
+              id="image-url"
+              placeholder="https://example.com/your-photo.jpg"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="window.location.href = 'index.html'"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+              Next
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Portfolio Details -->
+      <div id="step-2" class="step-content">
+        <h2>Portfolio Details</h2>
+
+        <div class="details-section">
+          <h3><i class="fas fa-briefcase"></i> Experiences</h3>
+          <div id="experiences-list" class="items-list"></div>
+          <button
+            type="button"
+            class="btn btn-small"
+            onclick="addItem('experience')"
+          >
+            <i class="fas fa-plus"></i> Add Experience
+          </button>
+        </div>
+
+        <div class="details-section">
+          <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+          <div id="educations-list" class="items-list"></div>
+          <button
+            type="button"
+            class="btn btn-small"
+            onclick="addItem('education')"
+          >
+            <i class="fas fa-plus"></i> Add Education
+          </button>
+        </div>
+
+        <div class="details-section">
+          <h3><i class="fas fa-star"></i> Skills</h3>
+          <div id="skills-list" class="items-list"></div>
+          <button
+            type="button"
+            class="btn btn-small"
+            onclick="addItem('skill')"
+          >
+            <i class="fas fa-plus"></i> Add Skill
+          </button>
+        </div>
+
+        <div class="details-section">
+          <h3><i class="fas fa-language"></i> Languages</h3>
+          <div id="languages-list" class="items-list"></div>
+          <button
+            type="button"
+            class="btn btn-small"
+            onclick="addItem('language')"
+          >
+            <i class="fas fa-plus"></i> Add Language
+          </button>
+        </div>
+
+        <div class="details-section">
+          <h3><i class="fas fa-code"></i> Projects</h3>
+          <div id="projects-list" class="items-list"></div>
+          <button
+            type="button"
+            class="btn btn-small"
+            onclick="addItem('project')"
+          >
+            <i class="fas fa-plus"></i> Add Project
+          </button>
+        </div>
+
+        <div class="details-section">
+          <h3><i class="fas fa-blog"></i> Blogs</h3>
+          <div id="blogs-list" class="items-list"></div>
+          <button type="button" class="btn btn-small" onclick="addItem('blog')">
+            <i class="fas fa-plus"></i> Add Blog
+          </button>
+        </div>
+
+        <div class="preview-section">
+          <h3>Portfolio Preview</h3>
+          <div class="preview-card">
+            <p><strong>Name:</strong> <span id="preview-name">-</span></p>
+            <p><strong>Title:</strong> <span id="preview-title">-</span></p>
+            <div class="preview-stats">
+              <p><strong>Items Added:</strong></p>
+              <ul>
+                <li>Experiences: <span id="preview-experiences">0</span></li>
+                <li>Education: <span id="preview-education">0</span></li>
+                <li>Skills: <span id="preview-skills">0</span></li>
+                <li>Languages: <span id="preview-languages">0</span></li>
+                <li>Projects: <span id="preview-projects">0</span></li>
+                <li>Blogs: <span id="preview-blogs">0</span></li>
+              </ul>
+            </div>
+            <p><strong>Your URL will be:</strong></p>
+            <div class="url-preview">
+              <code
+                >portfolio-view.html?username=<span id="preview-username"
+                  >username</span
+                ></code
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+            Back
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="generatePortfolio()"
+          >
+            <i class="fas fa-magic"></i> Generate Portfolio
+          </button>
+        </div>
+
+        <div id="result-message" class="result-message" style="display: none">
+          <i class="fas fa-check-circle"></i>
+          <h3>Portfolio Created Successfully!</h3>
+          <p>Your portfolio is now live at:</p>
+          <a
+            href="#"
+            id="portfolio-link"
+            target="_blank"
+            class="portfolio-url"
+          ></a>
+          <div class="result-actions">
+            <button class="btn btn-primary" onclick="viewPortfolio()">
+              View Portfolio
+            </button>
+            <button class="btn btn-secondary" onclick="resetForm()">
+              Create Another
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for adding items -->
+    <div id="modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Add Item</h3>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <!-- Dynamic content goes here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveItem()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Portfolio creation logic - SIMPLIFIED (no template)
+      let portfolioData = {
+        personalInfo: {},
+        experiences: [],
+        educations: [],
+        skills: [],
+        languages: [],
+        projects: [],
+        blogs: [],
+      };
+      let currentStep = 1;
+      let currentModalType = null;
+      let isEditing = false;
+      let editingIndex = null;
+
+      // Check if user is logged in and load existing portfolio
+      document.addEventListener("DOMContentLoaded", async function () {
+        const token = localStorage.getItem("portify_token");
+        const user = localStorage.getItem("portify_user");
+
+        if (!token || !user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Load user data
+        const userData = JSON.parse(user);
+        document.getElementById("preview-username").textContent =
+          userData.username;
+
+        // Load existing portfolio if it exists
+        await loadExistingPortfolio(token);
+
+        // Setup logout button
+        document
+          .getElementById("logout-btn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("portify_token");
+            localStorage.removeItem("portify_user");
+            window.location.href = "index.html";
+          });
+      });
+
+      // Load existing portfolio data
+      async function loadExistingPortfolio(token) {
+        try {
+          const response = await fetch("http://localhost:5000/api/portfolio", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const existingPortfolio = await response.json();
+            populateFormWithExistingData(existingPortfolio);
+            isEditing = true;
+            document.getElementById("page-title").textContent =
+              "Edit Your Portfolio";
+          }
+        } catch (error) {
+          console.log("No existing portfolio found, creating new one");
+        }
+      }
+
+      // Populate form with existing portfolio data
+      function populateFormWithExistingData(portfolio) {
+        // Personal Info
+        document.getElementById("full-name").value = portfolio.fullName || "";
+        document.getElementById("title").value = portfolio.title || "";
+        document.getElementById("bio").value = portfolio.bio || "";
+        document.getElementById("image-url").value = portfolio.imageUrl || "";
+
+        // Portfolio Data
+        portfolioData.personalInfo = {
+          fullName: portfolio.fullName,
+          title: portfolio.title,
+          bio: portfolio.bio,
+          imageUrl: portfolio.imageUrl,
+        };
+
+        // Experiences
+        if (portfolio.experiences) {
+          portfolioData.experiences = portfolio.experiences.map((exp) => ({
+            company: exp.company,
+            position: exp.position,
+            description: exp.description,
+            startYear: exp.startDate
+              ? new Date(exp.startDate).getFullYear()
+              : null,
+            endYear: exp.endDate ? new Date(exp.endDate).getFullYear() : null,
+          }));
+          renderExperiences();
+        }
+
+        // Education
+        if (portfolio.educations) {
+          portfolioData.educations = portfolio.educations.map((edu) => ({
+            institution: edu.institution,
+            degree: edu.degree,
+            field: edu.field,
+            year: edu.startYear || edu.year,
+          }));
+          renderEducations();
+        }
+
+        // Skills
+        if (portfolio.skills) {
+          portfolioData.skills = portfolio.skills.map((skill) => ({
+            name: skill.name,
+            level: skill.level,
+          }));
+          renderSkills();
+        }
+
+        // Languages
+        if (portfolio.languages) {
+          portfolioData.languages = portfolio.languages.map((lang) => ({
+            name: lang.name,
+            level: lang.level,
+          }));
+          renderLanguages();
+        }
+
+        // Projects
+        if (portfolio.projects) {
+          portfolioData.projects = portfolio.projects.map((project) => ({
+            title: project.title,
+            description: project.description,
+            technologies: project.technologies,
+            link: project.link,
+          }));
+          renderProjects();
+        }
+
+        // Blogs
+        if (portfolio.blogs) {
+          portfolioData.blogs = portfolio.blogs.map((blog) => ({
+            title: blog.title,
+            content: blog.content,
+            link: blog.link,
+          }));
+          renderBlogs();
+        }
+
+        updatePreview();
+      }
+
+      function goToStep(step) {
+        // Save current step data
+        if (currentStep === 1) {
+          if (!validateStep1()) return;
+        }
+
+        currentStep = step;
+
+        // Update UI
+        document
+          .querySelectorAll(".step")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".step-content")
+          .forEach((c) => c.classList.remove("active"));
+
+        document.querySelector(`[data-step="${step}"]`).classList.add("active");
+        document.getElementById(`step-${step}`).classList.add("active");
+
+        if (step === 2) {
+          updatePreview();
+        }
+      }
+
+      function validateStep1() {
+        const fullName = document.getElementById("full-name").value.trim();
+        const title = document.getElementById("title").value.trim();
+        const bio = document.getElementById("bio").value.trim();
+
+        let valid = true;
+
+        // Clear errors
+        ["full-name-error", "title-error", "bio-error"].forEach((id) => {
+          document.getElementById(id).textContent = "";
+        });
+
+        if (!fullName) {
+          document.getElementById("full-name-error").textContent =
+            "Full name is required";
+          valid = false;
+        }
+
+        if (!title) {
+          document.getElementById("title-error").textContent =
+            "Professional title is required";
+          valid = false;
+        }
+
+        if (!bio) {
+          document.getElementById("bio-error").textContent = "Bio is required";
+          valid = false;
+        } else if (bio.length < 50) {
+          document.getElementById("bio-error").textContent =
+            "Bio must be at least 50 characters";
+          valid = false;
+        }
+
+        if (valid) {
+          portfolioData.personalInfo = {
+            fullName,
+            title,
+            bio,
+            imageUrl: document.getElementById("image-url").value.trim() || null,
+          };
+        }
+
+        return valid;
+      }
+
+      function addItem(type, index = null) {
+        currentModalType = type;
+        editingIndex = index;
+        let title = index !== null ? "Edit Item" : "Add Item";
+        let form = "";
+        let item = index !== null ? portfolioData[type + "s"][index] : null;
+
+        switch (type) {
+          case "experience":
+            title = index !== null ? "Edit Experience" : "Add Experience";
+            form = `
+              <div class="form-group">
+                <label>Company *</label>
+                <input type="text" id="modal-company" required placeholder="Google" value="${
+                  item ? item.company : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Position *</label>
+                <input type="text" id="modal-position" required placeholder="Software Engineer" value="${
+                  item ? item.position : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="modal-description" rows="3" placeholder="Describe your role and responsibilities...">${
+                  item ? item.description || "" : ""
+                }</textarea>
+              </div>
+              <div class="form-group">
+                <label>Start Year *</label>
+                <input type="number" id="modal-start-year" min="1900" max="2100" required placeholder="2020" value="${
+                  item ? item.startYear || "" : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>End Year (leave blank if current)</label>
+                <input type="number" id="modal-end-year" min="1900" max="2100" placeholder="2023" value="${
+                  item ? item.endYear || "" : ""
+                }">
+              </div>
+            `;
+            break;
+
+          case "education":
+            title = index !== null ? "Edit Education" : "Add Education";
+            form = `
+              <div class="form-group">
+                <label>Institution *</label>
+                <input type="text" id="modal-institution" required placeholder="Stanford University" value="${
+                  item ? item.institution : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Degree *</label>
+                <input type="text" id="modal-degree" required placeholder="Bachelor of Science" value="${
+                  item ? item.degree : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Field of Study *</label>
+                <input type="text" id="modal-field" required placeholder="Computer Science" value="${
+                  item ? item.field : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Year *</label>
+                <input type="number" id="modal-year" min="1900" max="2100" required placeholder="2020" value="${
+                  item ? item.year || "" : ""
+                }">
+              </div>
+            `;
+            break;
+
+          case "skill":
+            title = index !== null ? "Edit Skill" : "Add Skill";
+            form = `
+              <div class="form-group">
+                <label>Skill Name *</label>
+                <input type="text" id="modal-skill-name" required placeholder="JavaScript" value="${
+                  item ? item.name : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Level *</label>
+                <select id="modal-skill-level" required>
+                  <option value="">Select level</option>
+                  <option value="Beginner" ${
+                    item && item.level === "Beginner" ? "selected" : ""
+                  }>Beginner</option>
+                  <option value="Intermediate" ${
+                    item && item.level === "Intermediate" ? "selected" : ""
+                  }>Intermediate</option>
+                  <option value="Advanced" ${
+                    item && item.level === "Advanced" ? "selected" : ""
+                  }>Advanced</option>
+                  <option value="Expert" ${
+                    item && item.level === "Expert" ? "selected" : ""
+                  }>Expert</option>
+                </select>
+              </div>
+            `;
+            break;
+
+          case "language":
+            title = index !== null ? "Edit Language" : "Add Language";
+            form = `
+              <div class="form-group">
+                <label>Language Name *</label>
+                <input type="text" id="modal-language-name" required placeholder="English" value="${
+                  item ? item.name : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Proficiency Level *</label>
+                <select id="modal-language-level" required>
+                  <option value="">Select level</option>
+                  <option value="Basic" ${
+                    item && item.level === "Basic" ? "selected" : ""
+                  }>Basic</option>
+                  <option value="Conversational" ${
+                    item && item.level === "Conversational" ? "selected" : ""
+                  }>Conversational</option>
+                  <option value="Fluent" ${
+                    item && item.level === "Fluent" ? "selected" : ""
+                  }>Fluent</option>
+                  <option value="Native" ${
+                    item && item.level === "Native" ? "selected" : ""
+                  }>Native</option>
+                </select>
+              </div>
+            `;
+            break;
+
+          case "project":
+            title = index !== null ? "Edit Project" : "Add Project";
+            form = `
+              <div class="form-group">
+                <label>Project Title *</label>
+                <input type="text" id="modal-project-title" required placeholder="E-commerce Website" value="${
+                  item ? item.title : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Description *</label>
+                <textarea id="modal-project-description" rows="3" required placeholder="Describe your project...">${
+                  item ? item.description || "" : ""
+                }</textarea>
+              </div>
+              <div class="form-group">
+                <label>Technologies Used</label>
+                <input type="text" id="modal-project-tech" placeholder="React, Node.js, MongoDB" value="${
+                  item ? item.technologies || "" : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Project Link (optional)</label>
+                <input type="url" id="modal-project-link" placeholder="https://github.com/username/project" value="${
+                  item ? item.link || "" : ""
+                }">
+              </div>
+            `;
+            break;
+
+          case "blog":
+            title = index !== null ? "Edit Blog" : "Add Blog";
+            form = `
+              <div class="form-group">
+                <label>Blog Title *</label>
+                <input type="text" id="modal-blog-title" required placeholder="Getting Started with React" value="${
+                  item ? item.title : ""
+                }">
+              </div>
+              <div class="form-group">
+                <label>Content *</label>
+                <textarea id="modal-blog-content" rows="4" required placeholder="Write your blog content...">${
+                  item ? item.content || "" : ""
+                }</textarea>
+              </div>
+              <div class="form-group">
+                <label>Blog Link (optional)</label>
+                <input type="url" id="modal-blog-link" placeholder="https://medium.com/username/blog-post" value="${
+                  item ? item.link || "" : ""
+                }">
+              </div>
+            `;
+            break;
+        }
+
+        document.getElementById("modal-title").textContent = title;
+        document.getElementById("modal-body").innerHTML = form;
+        document.getElementById("modal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+        currentModalType = null;
+        editingIndex = null;
+      }
+
+      function saveItem() {
+        let item = {};
+
+        switch (currentModalType) {
+          case "experience":
+            item = {
+              company: document.getElementById("modal-company").value,
+              position: document.getElementById("modal-position").value,
+              description: document.getElementById("modal-description").value,
+              startYear: parseInt(
+                document.getElementById("modal-start-year").value,
+              ),
+              endYear: document.getElementById("modal-end-year").value
+                ? parseInt(document.getElementById("modal-end-year").value)
+                : null,
+            };
+            if (editingIndex !== null) {
+              portfolioData.experiences[editingIndex] = item;
+            } else {
+              portfolioData.experiences.push(item);
+            }
+            renderExperiences();
+            break;
+
+          case "education":
+            item = {
+              institution: document.getElementById("modal-institution").value,
+              degree: document.getElementById("modal-degree").value,
+              field: document.getElementById("modal-field").value,
+              year: parseInt(document.getElementById("modal-year").value),
+            };
+            if (editingIndex !== null) {
+              portfolioData.educations[editingIndex] = item;
+            } else {
+              portfolioData.educations.push(item);
+            }
+            renderEducations();
+            break;
+
+          case "skill":
+            item = {
+              name: document.getElementById("modal-skill-name").value,
+              level: document.getElementById("modal-skill-level").value,
+            };
+            if (editingIndex !== null) {
+              portfolioData.skills[editingIndex] = item;
+            } else {
+              portfolioData.skills.push(item);
+            }
+            renderSkills();
+            break;
+
+          case "language":
+            item = {
+              name: document.getElementById("modal-language-name").value,
+              level: document.getElementById("modal-language-level").value,
+            };
+            if (editingIndex !== null) {
+              portfolioData.languages[editingIndex] = item;
+            } else {
+              portfolioData.languages.push(item);
+            }
+            renderLanguages();
+            break;
+
+          case "project":
+            item = {
+              title: document.getElementById("modal-project-title").value,
+              description: document.getElementById("modal-project-description")
+                .value,
+              technologies: document.getElementById("modal-project-tech").value,
+              link: document.getElementById("modal-project-link").value || null,
+            };
+            if (editingIndex !== null) {
+              portfolioData.projects[editingIndex] = item;
+            } else {
+              portfolioData.projects.push(item);
+            }
+            renderProjects();
+            break;
+
+          case "blog":
+            item = {
+              title: document.getElementById("modal-blog-title").value,
+              content: document.getElementById("modal-blog-content").value,
+              link: document.getElementById("modal-blog-link").value || null,
+            };
+            if (editingIndex !== null) {
+              portfolioData.blogs[editingIndex] = item;
+            } else {
+              portfolioData.blogs.push(item);
+            }
+            renderBlogs();
+            break;
+        }
+
+        closeModal();
+        updatePreview();
+      }
+
+      function renderExperiences() {
+        const container = document.getElementById("experiences-list");
+        container.innerHTML = "";
+
+        portfolioData.experiences.forEach((exp, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${exp.position}</strong> at ${exp.company}
+              <p>${exp.startYear} - ${exp.endYear || "Present"}</p>
+              ${exp.description ? `<p>${exp.description}</p>` : ""}
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('experience', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('experiences', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function renderEducations() {
+        const container = document.getElementById("educations-list");
+        container.innerHTML = "";
+
+        portfolioData.educations.forEach((edu, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${edu.degree} in ${edu.field}</strong>
+              <p>${edu.institution} • ${edu.year}</p>
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('education', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('educations', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function renderSkills() {
+        const container = document.getElementById("skills-list");
+        container.innerHTML = "";
+
+        portfolioData.skills.forEach((skill, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${skill.name}</strong>
+              <p>Level: ${skill.level}</p>
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('skill', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('skills', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function renderLanguages() {
+        const container = document.getElementById("languages-list");
+        container.innerHTML = "";
+
+        portfolioData.languages.forEach((lang, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${lang.name}</strong>
+              <p>Proficiency: ${lang.level}</p>
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('language', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('languages', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function renderProjects() {
+        const container = document.getElementById("projects-list");
+        container.innerHTML = "";
+
+        portfolioData.projects.forEach((project, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${project.title}</strong>
+              ${project.technologies ? `<p>Tech: ${project.technologies}</p>` : ""}
+              ${project.description ? `<p>${project.description.substring(0, 100)}${project.description.length > 100 ? "..." : ""}</p>` : ""}
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('project', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('projects', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function renderBlogs() {
+        const container = document.getElementById("blogs-list");
+        container.innerHTML = "";
+
+        portfolioData.blogs.forEach((blog, index) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div>
+              <strong>${blog.title}</strong>
+              ${blog.content ? `<p>${blog.content.substring(0, 100)}${blog.content.length > 100 ? "..." : ""}</p>` : ""}
+            </div>
+            <div class="item-actions">
+              <button onclick="editItem('blog', ${index})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteItem('blogs', ${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function editItem(type, index) {
+        addItem(type, index);
+      }
+
+      function deleteItem(type, index) {
+        if (confirm("Are you sure you want to delete this item?")) {
+          portfolioData[type].splice(index, 1);
+
+          if (type === "experiences") renderExperiences();
+          if (type === "educations") renderEducations();
+          if (type === "skills") renderSkills();
+          if (type === "languages") renderLanguages();
+          if (type === "projects") renderProjects();
+          if (type === "blogs") renderBlogs();
+
+          updatePreview();
+        }
+      }
+
+      function updatePreview() {
+        const user = JSON.parse(localStorage.getItem("portify_user") || "{}");
+
+        document.getElementById("preview-name").textContent =
+          portfolioData.personalInfo.fullName || "-";
+        document.getElementById("preview-title").textContent =
+          portfolioData.personalInfo.title || "-";
+        document.getElementById("preview-username").textContent =
+          user.username || "username";
+
+        // Update item counts
+        document.getElementById("preview-experiences").textContent =
+          portfolioData.experiences.length;
+        document.getElementById("preview-education").textContent =
+          portfolioData.educations.length;
+        document.getElementById("preview-skills").textContent =
+          portfolioData.skills.length;
+        document.getElementById("preview-languages").textContent =
+          portfolioData.languages.length;
+        document.getElementById("preview-projects").textContent =
+          portfolioData.projects.length;
+        document.getElementById("preview-blogs").textContent =
+          portfolioData.blogs.length;
+      }
+
+      async function generatePortfolio() {
+        const token = localStorage.getItem("portify_token");
+        const user = JSON.parse(localStorage.getItem("portify_user"));
+
+        // Prepare data for backend - NO TEMPLATE
+        const data = {
+          ...portfolioData.personalInfo,
+          experiences: portfolioData.experiences.map((exp) => ({
+            company: exp.company,
+            position: exp.position,
+            description: exp.description || null,
+            startDate: `${exp.startYear}-01-01T00:00:00.000Z`,
+            endDate: exp.endYear ? `${exp.endYear}-12-31T00:00:00.000Z` : null,
+          })),
+          educations: portfolioData.educations.map((edu) => ({
+            institution: edu.institution,
+            degree: edu.degree,
+            field: edu.field,
+            startYear: edu.year,
+            endYear: edu.year,
+          })),
+          skills: portfolioData.skills.map((skill) => ({
+            name: skill.name,
+            level: skill.level,
+          })),
+          languages: portfolioData.languages.map((lang) => ({
+            name: lang.name,
+            level: lang.level,
+          })),
+          projects: portfolioData.projects.map((project) => ({
+            title: project.title,
+            description: project.description || null,
+            technologies: project.technologies || null,
+            link: project.link || null,
+            imageUrl: null,
+          })),
+          blogs: portfolioData.blogs.map((blog) => ({
+            title: blog.title,
+            content: blog.content || null,
+            link: blog.link || null,
+            imageUrl: null,
+          })),
+        };
+
+        console.log("Sending data to backend:", data);
+
+        try {
+          const response = await fetch("http://localhost:5000/api/portfolio", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            // Show success message
+            const userUrl = `portfolio-view.html?username=${user.username}`;
+
+            document.getElementById("portfolio-link").href = userUrl;
+            document.getElementById("portfolio-link").textContent =
+              window.location.origin + "/" + userUrl;
+            document.getElementById("result-message").style.display = "block";
+
+            // Scroll to result
+            document
+              .getElementById("result-message")
+              .scrollIntoView({ behavior: "smooth" });
+          } else {
+            alert(result.message || "Failed to create portfolio");
+          }
+        } catch (error) {
+          console.error("Error creating portfolio:", error);
+          alert("Error creating portfolio. Please try again.");
+        }
+      }
+
+      function viewPortfolio() {
+        const link = document.getElementById("portfolio-link");
+        if (link.href) {
+          window.open(link.href, "_blank");
+        }
+      }
+
+      function resetForm() {
+        // Reset data
+        portfolioData = {
+          personalInfo: {},
+          experiences: [],
+          educations: [],
+          skills: [],
+          languages: [],
+          projects: [],
+          blogs: [],
+        };
+
+        // Reset form
+        document.getElementById("full-name").value = "";
+        document.getElementById("title").value = "";
+        document.getElementById("bio").value = "";
+        document.getElementById("image-url").value = "";
+
+        // Clear lists
+        renderExperiences();
+        renderEducations();
+        renderSkills();
+        renderLanguages();
+        renderProjects();
+        renderBlogs();
+
+        // Hide result message
+        document.getElementById("result-message").style.display = "none";
+
+        // Go back to step 1
+        goToStep(1);
+      }
+    </script>
+  </body>
+</html>

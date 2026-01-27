@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: portify-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: portify
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build: ./server
+    container_name: portify-api
+    restart: always
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  ui:
+    build: ./portify-ui
+    container_name: portify-ui
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
