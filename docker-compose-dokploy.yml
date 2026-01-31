@@ -11,6 +11,8 @@ services:
       POSTGRES_DB: portify
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
 
   api:
     build: ./server
@@ -20,6 +22,8 @@ services:
       - ./server/.env
     depends_on:
       - db
+    networks:
+      - dokploy-network
 
   ui:
     build: ./portify-ui
@@ -27,6 +31,12 @@ services:
     restart: always
     depends_on:
       - api
+    networks:
+      - dokploy-network
 
 volumes:
   postgres_data:
+
+networks:
+  dokploy-network:
+    external: true
