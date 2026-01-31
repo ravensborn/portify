@@ -91,11 +91,15 @@ app.use(
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api`);
-  console.log(`🔑 Auth endpoints: http://localhost:${PORT}/api/auth`);
-  console.log(`🎨 Portfolio endpoints: http://localhost:${PORT}/api/portfolio`);
-  console.log(`📋 Template endpoints: http://localhost:${PORT}/api/templates`);
+  console.log(`🚀 Server running on http://portify-api:${PORT}`);
+  console.log(`📚 API Documentation: http://portify-api:${PORT}/api`);
+  console.log(`🔑 Auth endpoints: http://portify-api:${PORT}/api/auth`);
+  console.log(
+    `🎨 Portfolio endpoints: http://portify-api:${PORT}/api/portfolio`,
+  );
+  console.log(
+    `📋 Template endpoints: http://portify-api:${PORT}/api/templates`,
+  );
 });
 
 // Graceful shutdown
