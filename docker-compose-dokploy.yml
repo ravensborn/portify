@@ -6,7 +6,7 @@ services:
     container_name: portify-api
     restart: always
     environment:
-      DATABASE_URL: "postgresql://postgres:1234@db:5432/portify?schema=public"
+      DATABASE_URL: "postgresql://portify:portify@portify-database-ydx9eu:5432/portify"
       JWT_SECRET: "your-super-secret-jwt-key-change-this-in-production"
       PORT: 3000
     networks:
