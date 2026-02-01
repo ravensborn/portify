@@ -3,8 +3,6 @@ services:
     build: ./portify-ui
     container_name: portify-ui
     restart: always
-    depends_on:
-      - api
     networks:
       - dokploy-network
 
