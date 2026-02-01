@@ -2,14 +2,14 @@
 
 ## Base URL
 
-`http://portify-api:5000/api`
+`https://backend.my-portify.com/api`
 
 ## Authentication
 
 ### Register
 
 ```bash
-curl -X POST http://portify-api:5000/api/auth/register \
+curl -X POST https://backend.my-portify.com/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",

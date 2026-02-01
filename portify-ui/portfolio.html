@@ -296,7 +296,7 @@
       async function loadExistingPortfolio(token) {
         try {
           const response = await fetch(
-            "http://portify-api:5000/api/portfolio",
+            "https://backend.my-portify.com/api/portfolio",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -1012,7 +1012,7 @@
 
         try {
           const response = await fetch(
-            "http://portify-api:5000/api/portfolio",
+            "https://backend.my-portify.com/api/portfolio",
             {
               method: "POST",
               headers: {
